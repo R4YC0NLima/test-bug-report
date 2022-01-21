@@ -17,8 +17,8 @@ services:
     networks:
       - network-bug-report
   php:
-    build: ./docker/php-fpm
-    container_name: bug-report
+    build: docker/php-fpm
+    container_name: php-bug-report
     entrypoint: /entrypoint.sh
     environment:
       CONTAINER_NAME: PHP
@@ -44,6 +44,18 @@ services:
       MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
       SERVICE_TAGS: dev
       SERVICE_NAME: mysql-bug-report
+    networks:
+      - network-bug-report
+  mysql-test:
+    image: mysql:8
+    tmpfs: /var/lib/mysql
+    container_name: mysql-teste-bug-report
+    command: --innodb-use-native-aio=0
+    environment:
+      MYSQL_DATABASE: "${DB_DATABASE}"
+      MYSQL_ROOT_PASSWORD: "${DB_PASSWORD}"
+      SERVICE_TAGS: dev
+      SERVICE_NAME: mysql-teste-bug-report
     networks:
       - network-bug-report
   phpmyadmin:
