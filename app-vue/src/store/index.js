@@ -1,5 +1,6 @@
 import { createStore } from 'vuex'
 import user from '@/store/modules/user';
+import bug from '@/store/modules/bug';
 
 
 export default createStore({
@@ -8,6 +9,7 @@ export default createStore({
     actions: {},
     modules: {
         user,
+        bug,
     },
     plugins: [
     ]

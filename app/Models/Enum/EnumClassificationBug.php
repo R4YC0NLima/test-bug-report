@@ -7,7 +7,7 @@ namespace App\Models\Enum;
 use Exception;
 
 
-class EnumClassificacaoDeBug
+class EnumClassificationBug
 {
     const VISUAIS       = 1;
     const SONOROS       = 2;

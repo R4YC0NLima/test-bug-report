@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BootSystemController;
+use App\Http\Controllers\BugController;
 use App\Http\Controllers\MeController;
 use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
@@ -27,4 +29,12 @@ Route::post('register', [AuthController::class, 'register']);
 Route::middleware('auth:sanctum')->group(function() {
     Route::get('me', [MeController::class, 'me']);
     Route::get('logout', [MeController::class, 'logout']);
+
+    Route::get('bugs', [BugController::class, 'index']);
+    Route::post('bugs', [BugController::class, 'store']);
+    Route::get('bugs/{bug}', [BugController::class, 'show']);
+    Route::put('bugs/{bug}', [BugController::class, 'update']);
+    Route::delete('bugs/{bug}', [BugController::class, 'destroy']);
+
+    Route::get('boot-system', [BootSystemController::class, 'bootSystem']);
 });

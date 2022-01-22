@@ -6,12 +6,17 @@ import LayoutAuth from '@/layouts/Auth'
 import LayoutDefault from '@/layouts/Default'
 import Register from "@/views/Register";
 
+import Bug from "@/views/Bug/Index";
+import BugNew from "@/views/Bug/New";
+
 const routes = [
     {
         path: '/', component: LayoutDefault,
         beforeEnter: Guard.redirectIfNotAuthenticated,
         children: [
             {path: '', name: 'index', component: Home},
+            {path: '/bug/listar', name: 'bug', component: Bug},
+            {path: '/bug/novo', name: 'bugnew', component: BugNew},
         ]
     },
     {

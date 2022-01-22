@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="bg-gray-50 dark:bg-gray-800 text-gray-600">
         <NavBar />
         <RouterView />
     </div>

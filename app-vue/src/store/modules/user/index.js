@@ -1,20 +1,23 @@
 import { SET_USER } from './mutation-types';
+import axios from "axios";
+import Cookie from "@/services/cookie";
+import router from "@/router";
 
 const namespaced = true;
 
 const state = {
-    user: [],
+    data: [],
 };
 
 const getters = {
     getUser: state => {
-        return state.user;
+        return state.data;
     },
 };
 
 const mutations = {
-    [SET_USER]: (state, user) => {
-        state.user = user;
+    [SET_USER]: (state, data) => {
+        state.data = data;
     },
 };
 
