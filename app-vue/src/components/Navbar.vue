@@ -21,6 +21,9 @@
                             <router-link to="/bug/listar" :exact-active-class="active ? 'bg-gray-900' : ''" class="text-white px-3 py-2 rounded-md text-sm font-medium">
                                 Bugs
                             </router-link>
+                            <router-link to="/user/listar" :exact-active-class="active ? 'bg-gray-900' : ''" class="text-white px-3 py-2 rounded-md text-sm font-medium">
+                                Users
+                            </router-link>
                             <a @click.prevent="logout" class="text-white px-3 py-2 rounded-md text-sm font-medium" role="menuitem" tabindex="-1">Sair</a>
                         </div>
                     </div>
@@ -54,6 +57,9 @@
                 </router-link>
                 <router-link to="/bug/listar" :exact-active-class="active ? 'bg-gray-900' : ''" class=" text-white block px-3 py-2 rounded-md text-base font-medium">
                     Bugs
+                </router-link>
+                <router-link to="/bug/listar" :exact-active-class="active ? 'bg-gray-900' : ''" class=" text-white block px-3 py-2 rounded-md text-base font-medium">
+                    Users
                 </router-link>
                 <a @click.prevent="logout" class="text-white block px-3 py-2 rounded-md text-base font-medium" role="menuitem" tabindex="-1">Sair</a>
             </div>

@@ -8,6 +8,11 @@ import Register from "@/views/Register";
 
 import Bug from "@/views/Bug/Index";
 import BugNew from "@/views/Bug/New";
+import BugUpdate from "@/views/Bug/Update";
+
+import User from "@/views/User/Index";
+import UserNew from "@/views/User/New";
+import UserUpdate from "@/views/User/Update";
 
 const routes = [
     {
@@ -16,7 +21,12 @@ const routes = [
         children: [
             {path: '', name: 'index', component: Home},
             {path: '/bug/listar', name: 'bug', component: Bug},
-            {path: '/bug/novo', name: 'bugnew', component: BugNew},
+            {path: '/bug/novo', name: 'bugNew', component: BugNew},
+            {path: '/bug/:id/editar', name: 'bugUpdate', component: BugUpdate,  props: true},
+
+            {path: '/user/listar', name: 'user', component: User},
+            {path: '/user/novo', name: 'userNew', component: UserNew},
+            {path: '/user/:id/editar', name: 'userUpdate', component: UserUpdate,  props: true},
         ]
     },
     {
@@ -32,11 +42,6 @@ const routes = [
         children: [
             { path: '', name: 'register', component: Register },
         ],
-    },
-    {
-        path: '/',
-        name: 'Home',
-        component: Home
     },
 ]
 

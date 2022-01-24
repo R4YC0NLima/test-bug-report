@@ -24,17 +24,30 @@ use Illuminate\Support\Facades\Route;
 //});
 
 Route::post('login', [AuthController::class, 'login']);
-Route::post('register', [AuthController::class, 'register']);
+Route::post('register', [UserController::class, 'register']);
 
 Route::middleware('auth:sanctum')->group(function() {
-    Route::get('me', [MeController::class, 'me']);
-    Route::get('logout', [MeController::class, 'logout']);
+    Route::prefix('me')->group(function () {
+        Route::get('', [MeController::class, 'me']);
+        Route::get('logout', [MeController::class, 'logout']);
+    });
 
-    Route::get('bugs', [BugController::class, 'index']);
-    Route::post('bugs', [BugController::class, 'store']);
-    Route::get('bugs/{bug}', [BugController::class, 'show']);
-    Route::put('bugs/{bug}', [BugController::class, 'update']);
-    Route::delete('bugs/{bug}', [BugController::class, 'destroy']);
+    Route::prefix('users')->group(function() {
+        Route::get('', [UserController::class, 'index']);
+        Route::get('/{user}', [UserController::class, 'show']);
+        Route::put('/{user}', [UserController::class, 'update']);
+        Route::delete('/{user}', [UserController::class, 'destroy']);
+    });
+
+    Route::prefix('bugs')->group(function () {
+        Route::get('', [BugController::class, 'index']);
+        Route::post('', [BugController::class, 'store']);
+        Route::get('/{bug}', [BugController::class, 'show']);
+        Route::put('/{bug}', [BugController::class, 'update']);
+        Route::delete('/{bug}', [BugController::class, 'destroy']);
+    });
+
+
 
     Route::get('boot-system', [BootSystemController::class, 'bootSystem']);
 });

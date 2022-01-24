@@ -19,6 +19,7 @@ class CreateUsersTable extends Migration
             $table->id();
             $table->string('name');
             $table->string('email')->unique();
+            $table->boolean('admin')->default(0);
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
@@ -26,8 +27,9 @@ class CreateUsersTable extends Migration
         });
 
         User::create([
-            'name'      => 'raycon@gmail.com',
+            'name'      => 'raycon',
             'email'     => 'raycon@gmail.com',
+            'admin'     => 1,
             'password'  => Hash::make('123456789')
         ]);
     }

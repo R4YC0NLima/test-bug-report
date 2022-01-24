@@ -19,7 +19,10 @@ class CreateBugsTable extends Migration
             $table->string('description');
             $table->string('type');
             $table->string('status');
+            $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('CASCADE');
         });
     }
 

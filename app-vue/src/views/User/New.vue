@@ -7,46 +7,49 @@
                     <button href="#my-work" class="text-white bg-green-800 font-medium px-3 py-2 rounded">Novo Bug</button>
                 </div>
                 <div class="rounded-xl relative z-10 overflow-hidden border border-primary border-opacity-full shadow shadow-2xl py-8 px-6 sm:p-10 lg:py-8 lg:px-4 xl:p-10 mb-10">
-                    <form action="#" method="POST">
+                    <form method="POST">
                         <div class="shadow overflow-hidden sm:rounded-md">
                             <div class="px-4 py-5 bg-white sm:p-6">
                                 <div class="md:flex md:items-center mb-6">
                                     <div class="md:w-full">
                                         <label class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4" for="inline-full-name">
-                                            Título
+                                            Nome
                                         </label>
-                                        <input type="text" name="title" v-model="formData.title" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="inline-full-name">
+                                        <input
+                                            type="text" v-model="formData.name"
+                                            class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                                        >
                                     </div>
-                                </div>
-                                <div class="grid grid-cols-6 gap-6">
-                                    <div class="col-span-6 sm:col-span-3">
-                                        <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                                        <select id="status" v-model="formData.status" name="status" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                            <option v-for="(status, index) in data.statusBug" :key="index">{{ status.name }}</option>
-                                        </select>
-                                    </div>
-
-                                    <div class="col-span-6 sm:col-span-3">
-                                        <label for="classifications" class="block text-sm font-medium text-gray-700">Tipo de Bug</label>
-                                        <select id="classifications" v-model="formData.type" name="country" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                            <option v-for="(type, index) in data.classificationsBug" :key="index">{{ type.name }}</option>
-                                        </select>
-                                    </div>
-
                                 </div>
                                 <div class="md:flex md:items-center mb-6">
                                     <div class="md:w-full">
-                                        <label class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4" for="inline-password">
-                                            Descrição
+                                        <label class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4" for="inline-full-name">
+                                            Email
                                         </label>
-                                        <textarea
-                                            v-model="formData.description"
+                                        <input
+                                            type="email" v-model="formData.email"
                                             class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                                            id="inline-password" type="password" placeholder="descreva o seu bug">
-                                        </textarea>
+                                            id="inline-full-name">
                                     </div>
                                 </div>
-
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="classifications" class="block text-sm font-medium text-gray-700">Administrador</label>
+                                    <select id="classifications" v-model="formData.admin" name="country" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        <option value="0">Não</option>
+                                        <option value="1">Sim</option>
+                                    </select>
+                                </div>
+                                <div class="md:flex md:items-center mb-6">
+                                    <div class="md:w-full">
+                                        <label class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4" for="inline-full-name">
+                                            Senha
+                                        </label>
+                                        <input
+                                            type="password" v-model="formData.password"
+                                            class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                                        >
+                                    </div>
+                                </div>
                             </div>
                             <div class="px-4 py-3 bg-gray-50 text-right sm:px-6">
                                 <button type="submit" @click.prevent="handleSubmit" class="inline-flex justify-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -63,19 +66,19 @@
 </template>
 
 <script>
-import { onMounted, ref} from 'vue'
+import {onMounted, reactive, ref} from 'vue'
 import axios from 'axios'
 
 export default {
-    name: "BugNew",
+    name: "UserNew",
     emits: ['btnRefresh', 'getData'],
     setup () {
         const data      = ref([])
-        const formData  = ref({
-            title       : '',
-            description : '',
-            status      : '',
-            type        : ''
+        const formData  = reactive({
+            name    : '',
+            email   : '',
+            admin   : 0,
+            password: '',
         })
         const loading   = ref(false)
         const error     = ref(null)
@@ -96,7 +99,7 @@ export default {
         }
 
         function handleSubmit() {
-            return axios.post('/bugs', this.formData)
+            return axios.post('/register', {...formData})
             .then((response) => {
                 console.log(response)
             })

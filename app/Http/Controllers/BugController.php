@@ -15,11 +15,18 @@ class BugController extends Controller
 {
     public function index()
     {
-        return Bug::all();
+        return Bug::with('user')->where('user_id', '=', auth()->id())->get();
     }
 
-    public function store(Request $request, Bug $bug): JsonResponse
+    public function store(Request $request): JsonResponse
     {
+        $bug                = new Bug();
+        $bug->title         = $request->title;
+        $bug->description   = $request->description;
+        $bug->type          = $request->type;
+        $bug->status        = $request->status;
+        $bug->user_id       = auth()->id();
+        $bug->save();
         return response()->json([
             'message'   => 'Bug cadastrado com sucesso!',
             'data'      => $bug->create($request->all())
@@ -32,13 +39,20 @@ class BugController extends Controller
     }
 
     //todo: Ajustar o update
-//    public function update(Request $request, Bug $bug): JsonResponse
-//    {
-//        return response()->json([
-//            'message'   => 'Bug atualizado com sucesso!',
-//            'data'      => $bug->update($request->all())
-//        ], 200);
-//    }
+    public function update(Request $request, Bug $bug): JsonResponse
+    {
+        $bug                = Bug::where('id', '=', $bug->id)->first();
+
+        $bug->title         = $request->title;
+        $bug->description   = $request->description;
+        $bug->type          = $request->type;
+        $bug->status        = $request->status;
+        $bug->save();
+        return response()->json([
+            'message'   => 'Bug atualizado com sucesso!',
+            'data'      => $bug
+        ], 200);
+    }
 
     public function destroy(Bug $bug): JsonResponse
     {

@@ -15,13 +15,16 @@
                                         <label class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4" for="inline-full-name">
                                             Título
                                         </label>
-                                        <input type="text" name="title" v-model="formData.title" class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500" id="inline-full-name">
+                                        <input
+                                            type="text" v-model="formData.title"
+                                            class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
+                                            id="inline-full-name">
                                     </div>
                                 </div>
                                 <div class="grid grid-cols-6 gap-6">
                                     <div class="col-span-6 sm:col-span-3">
                                         <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                                        <select id="status" v-model="formData.status" name="status" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        <select id="status" v-model="formData.status" name="country" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                             <option v-for="(status, index) in data.statusBug" :key="index">{{ status.name }}</option>
                                         </select>
                                     </div>
@@ -63,56 +66,80 @@
 </template>
 
 <script>
-import { onMounted, ref} from 'vue'
+import {onMounted, reactive, ref} from 'vue'
 import axios from 'axios'
 
 export default {
-    name: "BugNew",
-    emits: ['btnRefresh', 'getData'],
-    setup () {
+    name: "BugUpdate",
+    props: {
+        id: {
+            require: true
+        }
+    },
+    setup (props) {
         const data      = ref([])
-        const formData  = ref({
-            title       : '',
-            description : '',
-            status      : '',
-            type        : ''
+        const formData  = reactive({
+            title: '',
+            description: '',
+            status: '',
+            type: ''
         })
+
         const loading   = ref(false)
         const error     = ref(null)
 
         function btnRefresh() {
             loading.value = true
 
+            boot()
+        }
+
+        function boot() {
             return axios.get('/boot-system')
-                        .then((response) => {
-                            data.value = response.data
-                        })
-                        .catch(err => {
-                            error.value = err
-                        })
-                        .finally(() => {
-                            loading.value = false
-                        })
+                .then((response) => {
+                    data.value = response.data
+                })
+                .catch(err => {
+                    error.value = err
+                })
+                .finally(() => {
+                    loading.value = false
+                })
+        }
+
+        function getBug() {
+            return axios.get(`/bugs/${props.id}`)
+                .then((response) => {
+                    console.log([formData.title, response.data.title])
+                    formData.title          = response.data.title
+                    formData.description    = response.data.description
+                    formData.type           = response.data.title
+                    formData.status         = response.data.status
+                })
         }
 
         function handleSubmit() {
-            return axios.post('/bugs', this.formData)
-            .then((response) => {
-                console.log(response)
-            })
+            return axios
+                .put(`/bugs/${props.id}`, { ...formData })
+                .then((response) => {
+                    console.log(response)
+                })
         }
 
-        onMounted(() => {
+        onMounted(async () => {
+            await getBug()
+
             btnRefresh()
         })
 
         return {
             handleSubmit,
+            btnRefresh,
+            getBug,
             formData,
             data,
-            btnRefresh,
             loading,
-             error
+            error
         }
     }
 
