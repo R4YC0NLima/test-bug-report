@@ -4,7 +4,7 @@
             <div class=' w-full'>
                 <div class="flex items-center justify-end">
                     <button @click.prevent="btnRefresh" class="text-white bg-green-800 font-medium px-3 py-2 rounded mr-2">Atualizar</button>
-                    <button href="#my-work" class="text-white bg-green-800 font-medium px-3 py-2 rounded">Novo Bug</button>
+                    <router-link to="user/novo" class="text-white bg-green-800 font-medium px-3 py-2 rounded">Novo Bug</router-link>
                 </div>
                 <div class="rounded-xl relative z-10 overflow-hidden border border-primary border-opacity-full shadow shadow-2xl py-8 px-6 sm:p-10 lg:py-8 lg:px-4 xl:p-10 mb-10">
                     <form method="POST">
@@ -33,12 +33,15 @@
                                     </div>
                                 </div>
                                 <div class="col-span-6 sm:col-span-3">
-                                    <label for="classifications" class="block text-sm font-medium text-gray-700">Administrador</label>
-                                    <select id="classifications" v-model="formData.admin" name="country" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                    <label for="admin" class="block text-sm font-medium text-gray-700">Administrador</label>
+                                    <select id="admin" v-model="formData.admin" name="country" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
                                         <option value="0">Não</option>
                                         <option value="1">Sim</option>
                                     </select>
                                 </div>
+
+
+
                                 <div class="md:flex md:items-center mb-6">
                                     <div class="md:w-full">
                                         <label class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4" for="inline-full-name">
@@ -74,6 +77,7 @@ export default {
     emits: ['btnRefresh', 'getData'],
     setup () {
         const data      = ref([])
+        const isChecked = ref(true)
         const formData  = reactive({
             name    : '',
             email   : '',
@@ -110,12 +114,13 @@ export default {
         })
 
         return {
+            btnRefresh,
             handleSubmit,
             formData,
+            isChecked,
             data,
-            btnRefresh,
             loading,
-             error
+            error
         }
     }
 

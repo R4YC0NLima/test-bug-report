@@ -66,7 +66,9 @@
 
                             <td class="px-6 py-4 text-sm font-medium leading-5 text-right border-b border-gray-200 whitespace-nowrap">
                                 <button class="px-4 py-1 text-sm text-white bg-red-400 rounded mr-2" @click.prevent="onDelete(user.id)">Remover</button>
-<!--                                <router-link :to="{ name: 'userUpdate', params: { id: user.id } }" class="px-4 py-1 text-sm text-white bg-blue-400 rounded">Atualizar</router-link>-->
+                                <router-link
+                                    v-if="typeof user.id !== 'undefined'"
+                                    v-bind:to="{ name: 'userUpdate', params: { id: user.id} }" class="px-4 py-1 text-sm text-white bg-blue-400 rounded">Atualizar</router-link>
                             </td>
                         </tr>
                         </tbody>
@@ -79,7 +81,7 @@
 </template>
 
 <script>
-import {computed, onMounted} from 'vue'
+import {computed, onBeforeMount} from 'vue'
 import {useStore} from "vuex";
 import axios from 'axios'
 
@@ -88,14 +90,14 @@ export default {
     emits: ['btnRefresh', 'getData'],
     setup () {
         const store     = useStore()
-        const getData   = computed(() => store.state.user.data)
+        const getData   = computed(() => store.state.user.users)
 
-        onMounted(() => {
+        onBeforeMount(() => {
             btnRefresh()
         })
 
         function btnRefresh() {
-            store.dispatch('user/SET_USER')
+            store.dispatch('user/GET_USER')
         }
 
         function onDelete(id) {

@@ -17,12 +17,14 @@ class CreateBugsTable extends Migration
             $table->id();
             $table->string('title')->index();
             $table->string('description');
-            $table->string('type');
-            $table->string('status');
+            $table->unsignedBigInteger('status_id')->nullable();
+            $table->unsignedBigInteger('type_id')->nullable();
             $table->unsignedBigInteger('user_id')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('CASCADE');
+            $table->foreign('type_id')->references('id')->on('types')->onDelete('CASCADE');
+            $table->foreign('status_id')->references('id')->on('types');
         });
     }
 

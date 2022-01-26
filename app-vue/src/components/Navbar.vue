@@ -15,14 +15,17 @@
                     <div class="hidden md:block">
                         <div class="ml-10 flex items-baseline space-x-6">
                             <!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
+                            <a class="text-white px-3 py-2 rounded-md text-sm font-medium">
+                                {{ user.name }}
+                            </a>
                             <router-link to="/" :exact-active-class="active ? 'bg-gray-900' : ''" class="text-white px-3 py-2 rounded-md text-sm font-medium">
                                 Inicio
                             </router-link>
                             <router-link to="/bug/listar" :exact-active-class="active ? 'bg-gray-900' : ''" class="text-white px-3 py-2 rounded-md text-sm font-medium">
                                 Bugs
                             </router-link>
-                            <router-link to="/user/listar" :exact-active-class="active ? 'bg-gray-900' : ''" class="text-white px-3 py-2 rounded-md text-sm font-medium">
-                                Users
+                            <router-link v-show="user.admin === true" to="/usuario/listar" :exact-active-class="active ? 'bg-gray-900' : ''" class="text-white px-3 py-2 rounded-md text-sm font-medium">
+                                Usuários
                             </router-link>
                             <a @click.prevent="logout" class="text-white px-3 py-2 rounded-md text-sm font-medium" role="menuitem" tabindex="-1">Sair</a>
                         </div>
@@ -58,8 +61,8 @@
                 <router-link to="/bug/listar" :exact-active-class="active ? 'bg-gray-900' : ''" class=" text-white block px-3 py-2 rounded-md text-base font-medium">
                     Bugs
                 </router-link>
-                <router-link to="/bug/listar" :exact-active-class="active ? 'bg-gray-900' : ''" class=" text-white block px-3 py-2 rounded-md text-base font-medium">
-                    Users
+                <router-link v-show="user.admin === true" to="/usuario/listar" :exact-active-class="active ? 'bg-gray-900' : ''" class=" text-white block px-3 py-2 rounded-md text-base font-medium">
+                    Usuários
                 </router-link>
                 <a @click.prevent="logout" class="text-white block px-3 py-2 rounded-md text-base font-medium" role="menuitem" tabindex="-1">Sair</a>
             </div>
@@ -71,22 +74,26 @@ import {mapGetters, mapActions} from 'vuex'
 import axios from "axios";
 import Cookie from "@/services/cookie";
 import router from "../router";
+import {computed, onMounted, ref} from "vue";
+import store from "@/store";
 export default {
     name: "NavBar",
-    data() {
-        return {
-            isOpenMenuUser: false,
-            showMenu: false,
-            active: 1
-        }
-    },
-    computed: {
-        ...mapGetters({
-            'user': 'user/getUser',
-        }),
-    },
-    methods: {
-        logout() {
+    emits: ['logout', 'user'],
+    setup() {
+        const user              = computed(() => store.state.user.user)
+        const isOpenMenuUser    = ref(false)
+        const showMenu          = ref(false)
+        const active            = ref(0)
+
+        // onMounted(() => {
+        //     btnRefresh()
+        // })
+        //
+        // function btnRefresh() {
+        //     store.dispatch('user/GET_ISADMIN')
+        // }
+
+        function logout() {
             axios.get('me/logout')
                 .then(() => {
                     Cookie.deleteToken();
@@ -94,7 +101,38 @@ export default {
                     router.push({ name: 'login' });
                 });
         }
-    }
+
+        return {
+            logout,
+            user,
+            isOpenMenuUser,
+            showMenu,
+            active
+        }
+    },
+
+    // data() {
+    //     return {
+    //         isOpenMenuUser: false,
+    //         showMenu: false,
+    //         active: 1
+    //     }
+    // },
+    // computed: {
+    //     ...mapGetters({
+    //         'user': 'user/getUserLogged',
+    //     }),
+    // },
+    // methods: {
+    //     logout() {
+    //         axios.get('me/logout')
+    //             .then(() => {
+    //                 Cookie.deleteToken();
+    //                 Cookie.removeCookie();
+    //                 router.push({ name: 'login' });
+    //             });
+    //     }
+    // }
 }
 </script>
 

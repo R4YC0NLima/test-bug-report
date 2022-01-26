@@ -4,11 +4,18 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @property mixed|string $name
+ * @property mixed|string $email
+ * @property bool|mixed $admin
+ * @property mixed|string $password
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
@@ -44,10 +51,10 @@ class User extends Authenticatable
     ];
 
     /**
-     * @return HasMany
+     * @return BelongsToMany
      */
-    public function bugs(): HasMany
+    public function types(): BelongsToMany
     {
-        return $this->hasMany(Bug::class);
+        return $this->belongsToMany(Type::class);
     }
 }

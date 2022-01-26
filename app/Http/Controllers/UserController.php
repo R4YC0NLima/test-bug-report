@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\UserFormRequest;
 use App\Models\User;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
@@ -14,15 +15,15 @@ class UserController extends Controller
 {
     public function index()
     {
-        return User::all();
+        return User::with('types')->get();
     }
 
-    public function show(User $user)
+    public function show(User $user): User
     {
-        return $user->find($user);
+        return $user;
     }
 
-    public function register(Request $request): JsonResponse
+    public function register(UserFormRequest $request): JsonResponse
     {
         try {
             $user           = new User();
@@ -47,16 +48,21 @@ class UserController extends Controller
         return response()->json($response);
     }
 
-    public function update(Request $request, User $user): JsonResponse
+    public function update(UserFormRequest $request, User $user): JsonResponse
     {
         $user           = User::where('id', '=', $user->id)->first();
         $user->name     = $request->name;
         $user->email    = $request->email;
+        $user->admin    = $request->admin;
         $user->password = Hash::make($request->password);
         $user->save();
 
+        if ($request->type) {
+            $user->types()->attach($request->type);
+        }
+
         return response()->json([
-            'message'   => 'Bug atualizado com sucesso!',
+            'message'   => 'Usuário atualizado com sucesso!',
             'data'      => $user
         ], 200);
     }

@@ -23,8 +23,8 @@ use Illuminate\Support\Facades\Route;
 //    return $request->user();
 //});
 
-Route::post('login', [AuthController::class, 'login']);
 Route::post('register', [UserController::class, 'register']);
+Route::post('login', [AuthController::class, 'login']);
 
 Route::middleware('auth:sanctum')->group(function() {
     Route::prefix('me')->group(function () {
@@ -36,6 +36,7 @@ Route::middleware('auth:sanctum')->group(function() {
         Route::get('', [UserController::class, 'index']);
         Route::get('/{user}', [UserController::class, 'show']);
         Route::put('/{user}', [UserController::class, 'update']);
+        Route::post('/tipo_bug', [UserController::class, 'addTiposDeBug']);
         Route::delete('/{user}', [UserController::class, 'destroy']);
     });
 

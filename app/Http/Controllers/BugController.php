@@ -2,58 +2,89 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Controllers\Controller;
-//use App\Http\Resources\UserResource;
-use App\Http\Resources\UserResource;
+use App\Http\Requests\BugFormRequest;
 use App\Models\Bug;
-use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class BugController extends Controller
 {
+    /**
+     * @return Builder[]|Collection
+     */
     public function index()
     {
-        return Bug::with('user')->where('user_id', '=', auth()->id())->get();
+        $bugs      = Bug::with(['type', 'status', 'user'])->get();
+        $user      = auth()->user();
+        return $bugs->filter(function ($item) use ($user){
+            if ($item->status_id === 2) {
+                if ($item->user_id === $user->id || $user->admin === 1) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            return true;
+        });
     }
 
-    public function store(Request $request): JsonResponse
+    /**
+     * @param BugFormRequest $request
+     * @return JsonResponse
+     */
+    public function store(BugFormRequest $request): JsonResponse
     {
         $bug                = new Bug();
         $bug->title         = $request->title;
         $bug->description   = $request->description;
-        $bug->type          = $request->type;
-        $bug->status        = $request->status;
+        $bug->type_id       = $request->type_id;
+        $bug->status_id     = $request->status_id;
         $bug->user_id       = auth()->id();
         $bug->save();
+
         return response()->json([
             'message'   => 'Bug cadastrado com sucesso!',
             'data'      => $bug->create($request->all())
         ], 201);
     }
 
+    /**
+     * @param Bug $bug
+     * @return mixed
+     */
     public function show(Bug $bug)
     {
-        return $bug->find($bug);
+        return $bug->load(['type', 'status', 'user']);
     }
 
-    //todo: Ajustar o update
-    public function update(Request $request, Bug $bug): JsonResponse
+    /**
+     * @param BugFormRequest $request
+     * @param Bug $bug
+     * @return JsonResponse
+     */
+    public function update(BugFormRequest $request, Bug $bug): JsonResponse
     {
         $bug                = Bug::where('id', '=', $bug->id)->first();
 
         $bug->title         = $request->title;
         $bug->description   = $request->description;
-        $bug->type          = $request->type;
-        $bug->status        = $request->status;
+        $bug->type_id       = $request->type_id;
+        $bug->status_id     = $request->status_id;
         $bug->save();
+
         return response()->json([
             'message'   => 'Bug atualizado com sucesso!',
             'data'      => $bug
         ], 200);
     }
 
+
+    /**
+     * @param Bug $bug
+     * @return JsonResponse
+     */
     public function destroy(Bug $bug): JsonResponse
     {
         $bug->delete();

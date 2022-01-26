@@ -3,8 +3,8 @@
         <div class="container max-w-6xl mx-auto px-4">
             <div class=' w-full'>
                 <div class="flex items-center justify-end">
-                    <button @click.prevent="btnRefresh" class="text-white bg-green-800 font-medium px-3 py-2 rounded mr-2">Atualizar</button>
-                    <router-link to="/user/novo" class="text-white bg-green-800 font-medium px-3 py-2 rounded">Novo Usuário</router-link>
+                    <button @click.prevent="btnRefresh" class="text-white bg-green-800 font-medium px-3 py-2 rounded mr-3">Atualizar</button>
+                    <router-link to="/user/novo" class="text-white bg-green-800 font-medium px-3 py-2 rounded mr-3">Novo Usuário</router-link>
                 </div>
                 <div class="rounded-xl relative z-10 overflow-hidden border border-primary border-opacity-full shadow shadow-2xl py-8 px-6 sm:p-10 lg:py-8 lg:px-4 xl:p-10 mb-10">
                     <form method="POST">
@@ -17,8 +17,7 @@
                                         </label>
                                         <input
                                             type="text" v-model="formData.name"
-                                            class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                                            >
+                                            class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
                                     </div>
                                 </div>
                                 <div class="md:flex md:items-center mb-6">
@@ -32,6 +31,15 @@
                                             id="inline-full-name">
                                     </div>
                                 </div>
+
+                                <div class="col-span-6 sm:col-span-3">
+                                    <label for="admin" class="block text-sm font-medium text-gray-700">Administrador</label>
+                                    <select id="admin" v-model="formData.admin" name="country" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                        <option value="0">Não</option>
+                                        <option value="1">Sim</option>
+                                    </select>
+                                </div>
+
                                 <div class="md:flex md:items-center mb-6">
                                     <div class="md:w-full">
                                         <label class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4" for="inline-full-name">
@@ -39,8 +47,19 @@
                                         </label>
                                         <input
                                             type="password" v-model="formData.password"
-                                            class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500"
-                                            >
+                                            class="bg-gray-200 appearance-none border-2 border-gray-200 rounded w-full py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:bg-white focus:border-purple-500">
+                                    </div>
+                                </div>
+
+                                <div class="block">
+                                    <span class="block text-gray-500 font-bold md:text-left mb-1 md:mb-0 pr-4">Bugs:</span>
+                                    <div class="mt-2" >
+                                        <div>
+                                            <label class="inline-flex items-center mr-4" v-for="(type, index) in data.classificationsBug" :key="index">
+                                                <input type="checkbox" v-model="formData.type" class="form-checkbox" :value="type.id">
+                                                <span class="ml-2">{{ type.name }}</span>
+                                            </label>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -66,16 +85,18 @@ export default {
     name: "UserUpdate",
     props: {
         id: {
-            require: true
-        }
+            require: true,
+            type: Number
+        },
     },
     setup (props) {
         const data      = ref([])
         const formData  = reactive({
             name        :   '',
             email       :   '',
+            admin       :   0,
             password    :   '',
-            type        :   ''
+            type        :   []
         })
 
         const loading   = ref(false)
@@ -100,10 +121,11 @@ export default {
                 })
         }
 
-        function getBug() {
+        function getUser() {
             return axios.get(`/users/${props.id}`)
                 .then((response) => {
                     formData.name       =   response.data.name
+                    formData.admin      =   response.data.admin
                     formData.email      =   response.data.email
                     formData.password   =   response.data.password
                 })
@@ -113,12 +135,14 @@ export default {
             return axios
                 .put(`/users/${props.id}`, { ...formData })
                 .then((response) => {
-                    console.log(response)
+                    alert('sucesso')
+                }).catch((err) => {
+                    console.log(err)
                 })
         }
 
         onMounted(async () => {
-            await getBug()
+            await getUser()
 
             btnRefresh()
         })
@@ -126,7 +150,7 @@ export default {
         return {
             handleSubmit,
             btnRefresh,
-            getBug,
+            getUser,
             formData,
             data,
             loading,

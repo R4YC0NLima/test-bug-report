@@ -10,6 +10,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
  * @property mixed $email
  * @property mixed $created_at
  * @property mixed $updated_at
+ * @property mixed $admin
  */
 class UserResource extends JsonResource
 {
@@ -19,6 +20,7 @@ class UserResource extends JsonResource
         return [
             'id'            => (integer) $this->id,
             'name'          => (string) $this->name,
+            'admin'         => (boolean) $this->admin,
             'email'         => (string) $this->email,
             'created_at'    => (string) $this->created_at,
             'updated_at'    => (string) $this->updated_at,

@@ -10,73 +10,60 @@
                     <table class="min-w-full">
                         <thead>
                             <tr>
-                            <th class="px-6 py-3 text-xs font-medium leading-3 tracking-wider text-center text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
-                                #
-                            </th>
-                            <th class="px-6 py-3 text-xs font-medium leading-3 tracking-wider text-center text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
-                                Titulo
-                            </th>
-                            <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-center text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
-                                Descrição
-                            </th>
-                            <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-center text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
-                                Tipo
-                            </th>
-                            <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-center text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
-                                Status
-                            </th>
-                            <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-center text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
-                                Usuario
-                            </th>
-                            <th class="px-6 py-3 border-b border-gray-200 bg-gray-50"></th>
-                            <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-center text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
+                                <th class="px-6 py-3 text-xs font-medium leading-3 tracking-wider text-center text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
+                                    Titulo
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-center text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
+                                    Descrição
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-center text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
+                                    Tipo
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-center text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
+                                    Status
+                                </th>
+                                <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-center text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
+                                    Usuario
+                                </th>
+                                <th class="px-6 py-3 border-b border-gray-200 bg-gray-50"></th>
+                                <th class="px-6 py-3 text-xs font-medium leading-4 tracking-wider text-center text-gray-500 uppercase border-b border-gray-200 bg-gray-50">
 
-                            </th>
-                        </tr>
+                                </th>
+                            </tr>
                         </thead>
                         <tbody class="bg-white">
                             <tr v-if="getData.length < 1">
                                 <td colspan="6" class="text-center"><h5>Sem registros!</h5></td>
                             </tr>
                             <tr v-for="(bug, index) in getData" :key="index">
-                            <td class="px-6 py-4 border-b border-gray-200 whitespace-nowrap">
-                                <div class="flex bugs-center">
-                                    <div class="ml-4">
-                                        <div class="text-sm text-center font-medium leading-5 text-gray-900">
-                                            {{ bug.id }}
-                                        </div>
-                                    </div>
-                                </div>
-                            </td>
 
-                            <td class="px-6 py-4 border-b border-gray-200 whitespace-nowrap">
+                            <td class="px-6 py-4 border-b border-gray-200 text-center whitespace-nowrap">
                                 <div class="text-sm leading-5 text-gray-900">
                                     {{ bug.title }}
                                 </div>
                             </td>
-                            <td class="px-6 py-4 border-b border-gray-200 whitespace-nowrap">
+                            <td class="px-6 py-4 border-b border-gray-200 text-center whitespace-nowrap">
                                 <div class="text-sm leading-5 text-gray-900">
                                     {{ bug.description }}
                                 </div>
                             </td>
 
-                            <td class="px-6 py-4 border-b border-gray-200 whitespace-nowrap">
-                                {{ bug.type }}
+                            <td class="px-6 py-4 border-b border-gray-200 text-center whitespace-nowrap">
+                                {{ bug.type?.name }}
                             </td>
-                            <td class="px-6 py-4 border-b border-gray-200 whitespace-nowrap">
-                                <span class="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full">
-                                  {{ bug.status }}
+                            <td class="px-6 py-4 border-b border-gray-200 text-center whitespace-nowrap">
+                                <span :class="`inline-flex px-2 text-xs font-semibold leading-5 text-white bg-${bug.status?.color}-800 rounded-full`">
+                                  {{ bug.status?.name }}
                                 </span>
                             </td>
                             <td class="px-6 py-4 border-b border-gray-200 whitespace-nowrap">
-                                <span class="inline-flex px-2 text-xs font-semibold leading-5 text-green-800 bg-green-100 rounded-full">
-                                  {{ bug.user?.name }}
-                                </span>
+                                {{ bug.user?.name }}
                             </td>
 
                             <td class="px-6 py-4 text-sm font-medium leading-5 text-right border-b border-gray-200 whitespace-nowrap">
                                 <!--                        <a href="#" class="px-4 py-1 text-sm text-white bg-blue-400 rounded mr-2" @click.prevent="copyURL(this.domain + bug.code)">Copiar</a>-->
                                 <a href="#" class="px-4 py-1 text-sm text-white bg-red-400 rounded mr-2" @click.prevent="onDelete(bug.id)">Remover</a>
+                                <router-link :to="{ name: 'bugShow', params: { id: bug.id } }" class="px-4 py-1 text-sm text-white bg-green-400 rounded mr-2">Ver</router-link>
                                 <router-link :to="{ name: 'bugUpdate', params: { id: bug.id } }" class="px-4 py-1 text-sm text-white bg-blue-400 rounded">Atualizar</router-link>
                             </td>
                         </tr>
@@ -99,7 +86,7 @@ export default {
     emits: ['btnRefresh', 'getData'],
     setup () {
         const store     = useStore()
-        const getData   = computed(() => store.state.bug.data)
+        const getData   = computed(() => store.state.bug.bugs)
 
         onMounted(() => {
             btnRefresh()

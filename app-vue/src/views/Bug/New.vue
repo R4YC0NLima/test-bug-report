@@ -7,7 +7,7 @@
                     <button href="#my-work" class="text-white bg-green-800 font-medium px-3 py-2 rounded">Novo Bug</button>
                 </div>
                 <div class="rounded-xl relative z-10 overflow-hidden border border-primary border-opacity-full shadow shadow-2xl py-8 px-6 sm:p-10 lg:py-8 lg:px-4 xl:p-10 mb-10">
-                    <form action="#" method="POST">
+                    <form method="POST">
                         <div class="shadow overflow-hidden sm:rounded-md">
                             <div class="px-4 py-5 bg-white sm:p-6">
                                 <div class="md:flex md:items-center mb-6">
@@ -21,15 +21,15 @@
                                 <div class="grid grid-cols-6 gap-6">
                                     <div class="col-span-6 sm:col-span-3">
                                         <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                                        <select id="status" v-model="formData.status" name="status" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                            <option v-for="(status, index) in data.statusBug" :key="index">{{ status.name }}</option>
+                                        <select id="status" v-model="formData.status_id" name="status" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                            <option v-for="(status, index) in data.statusBug" :key="index" :value="status.id">{{ status.name }}</option>
                                         </select>
                                     </div>
 
                                     <div class="col-span-6 sm:col-span-3">
                                         <label for="classifications" class="block text-sm font-medium text-gray-700">Tipo de Bug</label>
-                                        <select id="classifications" v-model="formData.type" name="country" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                            <option v-for="(type, index) in data.classificationsBug" :key="index">{{ type.name }}</option>
+                                        <select id="classifications" v-model="formData.type_id" name="country" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                            <option v-for="(type, index) in data.classificationsBug" :key="index" :value="type.id">{{ type.name }}</option>
                                         </select>
                                     </div>
 
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { onMounted, ref} from 'vue'
+import {onMounted, reactive, ref} from 'vue'
 import axios from 'axios'
 
 export default {
@@ -71,11 +71,11 @@ export default {
     emits: ['btnRefresh', 'getData'],
     setup () {
         const data      = ref([])
-        const formData  = ref({
+        const formData  = reactive({
             title       : '',
             description : '',
-            status      : '',
-            type        : ''
+            status_id   : '',
+            type_id     : ''
         })
         const loading   = ref(false)
         const error     = ref(null)
@@ -96,7 +96,7 @@ export default {
         }
 
         function handleSubmit() {
-            return axios.post('/bugs', this.formData)
+            return axios.post('/bugs', {...formData})
             .then((response) => {
                 console.log(response)
             })

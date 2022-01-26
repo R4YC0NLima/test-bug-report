@@ -24,15 +24,15 @@
                                 <div class="grid grid-cols-6 gap-6">
                                     <div class="col-span-6 sm:col-span-3">
                                         <label for="status" class="block text-sm font-medium text-gray-700">Status</label>
-                                        <select id="status" v-model="formData.status" name="country" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                            <option v-for="(status, index) in data.statusBug" :key="index">{{ status.name }}</option>
+                                        <select id="status" v-model="formData.status_id" name="country" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                            <option v-for="(status, index) in data.statusBug" :key="index" :value="status.id">{{ status.name }}</option>
                                         </select>
                                     </div>
 
                                     <div class="col-span-6 sm:col-span-3">
                                         <label for="classifications" class="block text-sm font-medium text-gray-700">Tipo de Bug</label>
-                                        <select id="classifications" v-model="formData.type" name="country" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
-                                            <option v-for="(type, index) in data.classificationsBug" :key="index">{{ type.name }}</option>
+                                        <select id="classifications" v-model="formData.type_id" name="country" autocomplete="country-name" class="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm">
+                                            <option v-for="(type, index) in data.classificationsBug" :key="index" :value="type.id">{{ type.name }}</option>
                                         </select>
                                     </div>
 
@@ -73,16 +73,17 @@ export default {
     name: "BugUpdate",
     props: {
         id: {
-            require: true
+            require: true,
+            type: Object
         }
     },
     setup (props) {
         const data      = ref([])
         const formData  = reactive({
-            title: '',
-            description: '',
-            status: '',
-            type: ''
+            title       : '',
+            description : '',
+            status_id   : '',
+            type_id     : ''
         })
 
         const loading   = ref(false)
@@ -110,11 +111,10 @@ export default {
         function getBug() {
             return axios.get(`/bugs/${props.id}`)
                 .then((response) => {
-                    console.log([formData.title, response.data.title])
                     formData.title          = response.data.title
                     formData.description    = response.data.description
-                    formData.type           = response.data.title
-                    formData.status         = response.data.status
+                    formData.type_id        = response.data.type_id
+                    formData.status_id      = response.data.status_id
                 })
         }
 
